@@ -40,20 +40,59 @@ function getUniquePageName(baseName: string): string {
   return `${trimmedBaseName} (Imported ${suffix})`
 }
 
+function calculateBoundingBox(nodes: ReadonlyArray<SceneNode>): {
+  x: number
+  y: number
+  width: number
+  height: number
+} {
+  if (nodes.length === 0) {
+    return { x: 0, y: 0, width: 100, height: 100 }
+  }
+
+  let minX = Infinity
+  let minY = Infinity
+  let maxX = -Infinity
+  let maxY = -Infinity
+
+  for (const node of nodes) {
+    minX = Math.min(minX, node.x)
+    minY = Math.min(minY, node.y)
+    maxX = Math.max(maxX, node.x + node.width)
+    maxY = Math.max(maxY, node.y + node.height)
+  }
+
+  return {
+    x: minX,
+    y: minY,
+    width: maxX - minX,
+    height: maxY - minY
+  }
+}
+
 function cloneTopLevelNodesIntoFrame(sourcePage: PageNode, targetFrame: FrameNode): void {
   // Clone only top-level nodes. This avoids bringing the whole page node itself.
   // `clone()` keeps locked/hidden status as-is.
+  const clonedNodes: Array<SceneNode> = []
   for (const node of sourcePage.children) {
-    targetFrame.appendChild(node.clone())
+    const cloned = node.clone()
+    targetFrame.appendChild(cloned)
+    clonedNodes.push(cloned)
   }
-  // Apply auto layout to the frame: vertical direction, centered, default spacing.
-  targetFrame.layoutMode = 'VERTICAL'
-  targetFrame.itemSpacing = 16
-  targetFrame.primaryAxisAlignItems = 'MIN'
-  targetFrame.counterAxisAlignItems = 'CENTER'
-  // Set both width and height to hug contents.
-  targetFrame.primaryAxisSizingMode = 'AUTO'
-  targetFrame.counterAxisSizingMode = 'AUTO'
+
+  // NO auto layout - preserve absolute positioning!
+  // Calculate bounding box and resize frame to fit all content with padding.
+  const bounds = calculateBoundingBox(clonedNodes)
+  const padding = 50
+
+  // Adjust node positions to be relative to frame origin with padding offset
+  for (const node of clonedNodes) {
+    node.x = node.x - bounds.x + padding
+    node.y = node.y - bounds.y + padding
+  }
+
+  // Resize frame to fit content + padding on all sides
+  targetFrame.resize(bounds.width + padding * 2, bounds.height + padding * 2)
 }
 
 function stackFramesVertically(frames: Array<FrameNode>, spacing: number): void {
