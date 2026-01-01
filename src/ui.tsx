@@ -1,6 +1,5 @@
 import {
   Button,
-  Columns,
   Container,
   render,
   VerticalSpace,
@@ -10,7 +9,6 @@ import { h } from "preact";
 import { useCallback } from "preact/hooks";
 
 import {
-  CloseHandler,
   FindBoundVariablesHandler,
   PackPagesHandler,
   UnpackPagesHandler,
@@ -29,31 +27,29 @@ function Plugin() {
     emit<FindBoundVariablesHandler>("FIND_BOUND_VARIABLES");
   }, []);
 
-  const handleCloseButtonClick = useCallback(function () {
-    emit<CloseHandler>("CLOSE");
-  }, []);
-
   return (
     <Container space="medium">
       <VerticalSpace space="extraLarge" />
       <Button fullWidth onClick={handlePackPagesButtonClick}>
-        Pack Pages
+        Pack Pages ↓
       </Button>
-      <VerticalSpace space="small" />
+      <VerticalSpace space="medium" />
+      <hr
+        style={{ border: "none", borderTop: "1px solid #ccc", margin: "0" }}
+      />
+      <VerticalSpace space="medium" />
       <Button fullWidth onClick={handleFindBoundVariablesButtonClick}>
         Find bound variables
       </Button>
-      <VerticalSpace space="small" />
+      <VerticalSpace space="medium" />
+      <hr
+        style={{ border: "none", borderTop: "1px solid #ccc", margin: "0" }}
+      />
+      <VerticalSpace space="medium" />
       <Button fullWidth onClick={handleUnpackPagesButtonClick}>
-        Unpack Pages
+        Unpack Pages ↑
       </Button>
       <VerticalSpace space="large" />
-      <Columns space="extraSmall">
-        <Button fullWidth onClick={handleCloseButtonClick} secondary>
-          Close
-        </Button>
-      </Columns>
-      <VerticalSpace space="small" />
     </Container>
   );
 }
