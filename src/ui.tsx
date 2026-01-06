@@ -135,7 +135,7 @@ function Plugin() {
         <div style={{ display: "flex", gap: "8px" }}>
           <button
             onClick={handleSelectAll}
-            disabled={allSelected}
+            hidden={allSelected}
             style={{
               background: "none",
               border: "none",
@@ -151,7 +151,7 @@ function Plugin() {
           </button>
           <button
             onClick={handleDeselectAll}
-            disabled={noneSelected}
+            hidden={!allSelected}
             style={{
               background: "none",
               border: "none",
