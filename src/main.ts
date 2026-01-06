@@ -274,8 +274,7 @@ function restoreSectionsRecursively(
     node.getPluginData("tcc:wasSection") === "true"
   ) {
     // This frame was originally a section - recreate it
-    const sectionName =
-      node.getPluginData("tcc:sectionName") || node.name;
+    const sectionName = node.getPluginData("tcc:sectionName") || node.name;
     console.log(`[TCC] Restoring section: ${sectionName}`);
 
     const section = figma.createSection();
