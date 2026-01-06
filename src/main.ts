@@ -334,8 +334,8 @@ function unpackPages(): void {
   let createdPagesCount = 0;
 
   for (const frame of frames) {
-    const preferredName = frame.getPluginData("tcc:pageName") || frame.name;
-    const pageName = getUniquePageName(preferredName);
+    // Use the original page name directly - Figma allows duplicate page names
+    const pageName = frame.getPluginData("tcc:pageName") || frame.name;
     console.log(`[TCC] Creating page "${pageName}" from frame "${frame.name}"`);
 
     const page = figma.createPage();
